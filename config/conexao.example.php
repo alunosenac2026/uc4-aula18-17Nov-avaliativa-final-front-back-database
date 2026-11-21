@@ -1,9 +1,10 @@
+
 <?php
 
 $host = 'localhost';
-$dbname = 'sistema_gerenciamento_usuarios';
-$username = 'root';
-$password = 'root';
+$dbname = 'nome_do_banco';
+$username = 'seu_usuario';
+$password = 'sua_senha';
 
 try {
     $pdo = new PDO(
@@ -19,8 +20,6 @@ try {
 
 } catch (PDOException $e) {
     error_log('Erro na conexão com o banco de dados: ' . $e->getMessage());
-
     http_response_code(500);
-
     exit('Não foi possível conectar ao banco de dados.');
 }

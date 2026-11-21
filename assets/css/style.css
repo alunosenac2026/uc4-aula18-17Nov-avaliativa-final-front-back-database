@@ -138,3 +138,118 @@ body {
         font-size: 1.4rem;
     }
 }
+
+
+/* =========================================
+   Interface administrativa
+========================================= */
+
+.pagina-sistema {
+    min-height: 100vh;
+    background-color: var(--cor-fundo);
+}
+
+.sistema-cabecalho {
+    padding: 24px 0;
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+}
+
+.sistema-marca h1 {
+    margin: 0 0 4px;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.sistema-marca p {
+    margin: 0;
+    color: #b8c7db;
+    font-size: 0.85rem;
+}
+
+.sistema-usuario {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.sistema-conteudo {
+    padding-top: 48px;
+    padding-bottom: 48px;
+}
+
+.sistema-card {
+    padding: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background-color: var(--cor-branco);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+}
+
+.sistema-titulo {
+    margin-bottom: 6px;
+    color: var(--cor-primaria);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.sistema-subtitulo {
+    margin-bottom: 0;
+    color: var(--cor-texto-suave);
+    font-size: 0.9rem;
+}
+
+.sistema-tabela {
+    margin-bottom: 0;
+    font-size: 0.92rem;
+}
+
+.sistema-tabela thead th {
+    padding: 16px;
+    border-bottom: 2px solid #e2e8f0;
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sistema-tabela tbody td {
+    padding: 16px;
+    border-bottom-color: #edf2f7;
+}
+
+.sistema-tabela .btn {
+    white-space: nowrap;
+}
+
+.sistema-total {
+    margin: 20px 0 0;
+    color: var(--cor-texto-suave);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+
+    .sistema-cabecalho {
+        padding: 20px 0;
+    }
+
+    .sistema-conteudo {
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .sistema-card {
+        padding: 20px;
+    }
+
+    .sistema-titulo {
+        font-size: 1.3rem;
+    }
+
+    .sistema-usuario {
+        font-size: 0.8rem;
+    }
+
+}

@@ -24,7 +24,6 @@ try {
             ORDER BY nome ASC";
 
     $stmt = $pdo->query($sql);
-
     $usuarios = $stmt->fetchAll();
 
 } catch (PDOException $e) {
@@ -47,7 +46,6 @@ $mensagensExclusao = [
 ];
 
 $exclusao = $_GET['exclusao'] ?? '';
-
 $mensagemExclusao = '';
 
 if (
@@ -63,49 +61,97 @@ if (
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Usuários | Sistema de Gerenciamento</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+
 </head>
 
-<body>
+<body class="pagina-sistema">
 
-    <main>
+    <header class="sistema-cabecalho">
 
-        <header>
+        <div class="container">
 
-            <h1>Gerenciamento de Usuários</h1>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
 
-            <p>
-                Bem-vindo,
-                <?= htmlspecialchars(
-                    $_SESSION['usuario_nome'],
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>!
-            </p>
+                <div class="sistema-marca">
 
-            <nav>
-                <a href="insert.php">Cadastrar usuário</a>
-                |
-                <a href="../logout.php">Sair do sistema</a>
-            </nav>
+                    <h1>Gerenciamento de Usuários</h1>
 
-        </header>
+                    <p>Painel administrativo</p>
 
-        <section>
+                </div>
 
-            <h2>Usuários cadastrados</h2>
+                <div class="d-flex align-items-center gap-3">
+
+                    <span class="sistema-usuario">
+                        <?= htmlspecialchars(
+                            $_SESSION['usuario_nome'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+                    </span>
+
+                    <a
+                        href="../logout.php"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Sair
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="container sistema-conteudo">
+
+        <section class="sistema-card">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+                <div>
+
+                    <h2 class="sistema-titulo">
+                        Usuários cadastrados
+                    </h2>
+
+                    <p class="sistema-subtitulo">
+                        Gerencie os usuários registrados no sistema.
+                    </p>
+
+                </div>
+
+                <a
+                    href="insert.php"
+                    class="btn btn-primario px-4"
+                >
+                    + Novo usuário
+                </a>
+
+            </div>
 
             <?php if (
                 isset($_GET['cadastro']) &&
                 $_GET['cadastro'] === 'sucesso'
             ): ?>
 
-                <p role="status">
+                <div class="alert alert-success" role="status">
                     Usuário cadastrado com sucesso!
-                </p>
+                </div>
 
             <?php endif; ?>
 
@@ -114,17 +160,22 @@ if (
                 $_GET['edicao'] === 'sucesso'
             ): ?>
 
-                <p role="status">
+                <div class="alert alert-success" role="status">
                     Usuário atualizado com sucesso!
-                </p>
+                </div>
 
             <?php endif; ?>
 
             <?php if ($mensagemExclusao !== ''): ?>
 
-                <p role="<?= $exclusao === 'sucesso'
-                    ? 'status'
-                    : 'alert' ?>">
+                <div
+                    class="alert <?= $exclusao === 'sucesso'
+                        ? 'alert-success'
+                        : 'alert-danger' ?>"
+                    role="<?= $exclusao === 'sucesso'
+                        ? 'status'
+                        : 'alert' ?>"
+                >
 
                     <?= htmlspecialchars(
                         $mensagemExclusao,
@@ -132,133 +183,156 @@ if (
                         'UTF-8'
                     ) ?>
 
-                </p>
+                </div>
 
             <?php endif; ?>
 
             <?php if ($erro !== ''): ?>
 
-                <p role="alert">
+                <div class="alert alert-danger" role="alert">
                     <?= htmlspecialchars(
                         $erro,
                         ENT_QUOTES,
                         'UTF-8'
                     ) ?>
-                </p>
+                </div>
 
             <?php elseif (count($usuarios) === 0): ?>
 
-                <p>Nenhum usuário cadastrado.</p>
+                <div class="alert alert-info">
+                    Nenhum usuário cadastrado.
+                </div>
 
             <?php else: ?>
 
-                <table>
+                <div class="table-responsive">
 
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Login</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
+                    <table class="table table-hover align-middle sistema-tabela">
 
-                    <tbody>
-
-                        <?php foreach ($usuarios as $usuario): ?>
+                        <thead>
 
                             <tr>
-
-                                <td>
-                                    <?= htmlspecialchars(
-                                        (string) $usuario['id'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
-
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $usuario['nome'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
-
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $usuario['email'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
-
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $usuario['login'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-                                </td>
-
-                                <td>
-
-                                    <a href="update.php?id=<?= (int) $usuario['id'] ?>">
-                                        Editar
-                                    </a>
-
-                                    <?php if (
-                                        (int) $usuario['id'] !==
-                                        (int) $_SESSION['usuario_id']
-                                    ): ?>
-
-                                        <form
-                                            method="POST"
-                                            action="delete.php"
-                                            style="display: inline;"
-                                            onsubmit="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não poderá ser desfeita.');"
-                                        >
-
-                                            <input
-                                                type="hidden"
-                                                name="id"
-                                                value="<?= (int) $usuario['id'] ?>"
-                                            >
-
-                                            <input
-                                                type="hidden"
-                                                name="csrf_token"
-                                                value="<?= htmlspecialchars(
-                                                    $_SESSION['csrf_exclusao'],
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                ) ?>"
-                                            >
-
-                                            <button type="submit">
-                                                Excluir
-                                            </button>
-
-                                        </form>
-
-                                    <?php else: ?>
-
-                                        <span>
-                                            (Sua conta)
-                                        </span>
-
-                                    <?php endif; ?>
-
-                                </td>
-
+                                <th scope="col">ID</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Login</th>
+                                <th scope="col">Ações</th>
                             </tr>
 
-                        <?php endforeach; ?>
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            <?php foreach ($usuarios as $usuario): ?>
+
+                                <tr>
+
+                                    <td>
+                                        <?= (int) $usuario['id'] ?>
+                                    </td>
+
+                                    <td class="fw-semibold">
+
+                                        <?= htmlspecialchars(
+                                            $usuario['nome'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+
+                                    </td>
+
+                                    <td>
+
+                                        <?= htmlspecialchars(
+                                            $usuario['email'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+
+                                    </td>
+
+                                    <td>
+
+                                        <?= htmlspecialchars(
+                                            $usuario['login'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="d-flex flex-wrap align-items-center gap-2">
+
+                                            <a
+                                                href="update.php?id=<?= (int) $usuario['id'] ?>"
+                                                class="btn btn-outline-primary btn-sm"
+                                            >
+                                                Editar
+                                            </a>
+
+                                            <?php if (
+                                                (int) $usuario['id'] !==
+                                                (int) $_SESSION['usuario_id']
+                                            ): ?>
+
+                                                <form
+                                                    method="POST"
+                                                    action="delete.php"
+                                                    onsubmit="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não poderá ser desfeita.');"
+                                                >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="id"
+                                                        value="<?= (int) $usuario['id'] ?>"
+                                                    >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="csrf_token"
+                                                        value="<?= htmlspecialchars(
+                                                            $_SESSION['csrf_exclusao'],
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        ) ?>"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-outline-danger btn-sm"
+                                                    >
+                                                        Excluir
+                                                    </button>
+
+                                                </form>
+
+                                            <?php else: ?>
+
+                                                <span class="badge text-bg-secondary">
+                                                    Sua conta
+                                                </span>
+
+                                            <?php endif; ?>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="sistema-total">
+                    Total de usuários: <?= count($usuarios) ?>
+                </p>
 
             <?php endif; ?>
 

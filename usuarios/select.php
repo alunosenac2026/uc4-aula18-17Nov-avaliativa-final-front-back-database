@@ -29,6 +29,9 @@ verificarAutenticacao();
 
         <p>Autenticação realizada com sucesso.</p>
 
+        <p><a href="../logout.php">Sair do sistema</a></p>
+        
+
     </main>
 
 </body>

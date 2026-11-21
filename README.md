@@ -55,3 +55,26 @@ de registros, armazenando o tipo de ação, os dados afetados e a data/hora do e
 •
 Criar uma página de Relatório de Logs no sistema para consultar e exibir o histórico registrado pela tabela de log.
 Entrega: Compactar a pasta completa do projeto ou encaminhar o link do repositório público no github e enviar até a data combinada. Encaminhar junto o script de criação de banco para poder replicar o processo.
+
+
+
+ SCRIPT DE CRIAÇÃO DO BANCO DE DADOS E TABELA USUARIO
+-- =====================================================
+-- PROJETO FINAL UC4 - SISTEMA DE GERENCIAMENTO DE USUARIOS
+-- =====================================================
+
+CREATE DATABASE IF NOT EXISTS sistema_gerenciamento_usuarios
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE sistema_gerenciamento_usuarios;
+
+CREATE TABLE IF NOT EXISTS Usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    login VARCHAR(50) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL
+);
+
+DESCRIBE Usuario;

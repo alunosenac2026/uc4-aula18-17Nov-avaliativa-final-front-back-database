@@ -78,3 +78,15 @@ CREATE TABLE IF NOT EXISTS Usuario (
 );
 
 DESCRIBE Usuario;
+
+-- =====================================================
+--  INSERCAO DO ADMINISTRADOR INICIAL
+-- =====================================================
+
+INSERT INTO Usuario (nome, email, login, senha)
+VALUES (
+    'Administrador',
+    'admin@sistema.local',
+    'admin',
+    '$2y$10$j2c/nbxzGEVw87rwdj2Ba.bvMOnRZHKNyVwCuf6Y8BpWrF.2w29YO'
+);

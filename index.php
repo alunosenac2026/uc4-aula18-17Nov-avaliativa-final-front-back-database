@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         try {
+
             $sql = "SELECT id, nome, login, senha
                     FROM Usuario
                     WHERE login = :login
@@ -52,64 +53,140 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } catch (PDOException $e) {
 
-            error_log('Erro durante a autenticação: ' . $e->getMessage());
+            error_log(
+                'Erro durante a autenticação: ' . $e->getMessage()
+            );
+
             $erro = 'Não foi possível realizar o login. Tente novamente.';
 
         }
+
     }
+
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Login | Sistema de Gerenciamento de Usuários</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
 </head>
 
 <body>
 
-    <main>
+    <main class="pagina-login">
 
-        <h1>Sistema de Gerenciamento de Usuários</h1>
+        <div class="login-container">
 
-        <h2>Acesso ao sistema</h2>
+            <header class="login-identidade">
 
-        <?php if ($erro !== ''): ?>
-            <p role="alert">
-                <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
-            </p>
-        <?php endif; ?>
+                <h1>Sistema de Gerenciamento de Usuários</h1>
 
-        <form method="POST" action="">
+                <p>
+                    Controle de acesso e gerenciamento de usuários
+                </p>
 
-            <div>
-                <label for="login">Login:</label>
-                <input
-                    type="text"
-                    id="login"
-                    name="login"
-                    required
-                    autocomplete="username"
-                >
-            </div>
+            </header>
 
-            <div>
-                <label for="senha">Senha:</label>
-                <input
-                    type="password"
-                    id="senha"
-                    name="senha"
-                    required
-                    autocomplete="current-password"
-                >
-            </div>
+            <section class="login-card" aria-labelledby="titulo-login">
 
-            <button type="submit">Entrar</button>
+                <h2 id="titulo-login">Bem-vindo de volta</h2>
 
-        </form>
+                <p class="login-descricao">
+                    Informe suas credenciais para acessar o sistema.
+                </p>
+
+                <?php if ($erro !== ''): ?>
+
+                    <div class="alert alert-danger" role="alert">
+
+                        <?= htmlspecialchars(
+                            $erro,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+
+                    </div>
+
+                <?php endif; ?>
+
+                <form method="POST" action="">
+
+                    <div class="mb-3">
+
+                        <label for="login" class="form-label">
+                            Login
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="login"
+                            name="login"
+                            placeholder="Digite seu login"
+                            required
+                            autocomplete="username"
+                            autofocus
+                        >
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label for="senha" class="form-label">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua senha"
+                            required
+                            autocomplete="current-password"
+                        >
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primario w-100"
+                    >
+                        Entrar no sistema
+                    </button>
+
+                </form>
+
+            </section>
+
+            <footer class="login-rodape">
+
+                <p>
+                    Acesso restrito a usuários autenticados.
+                </p>
+
+            </footer>
+
+        </div>
 
     </main>
 

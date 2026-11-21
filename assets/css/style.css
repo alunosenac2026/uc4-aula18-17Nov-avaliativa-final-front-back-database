@@ -1,0 +1,140 @@
+
+:root {
+    --cor-primaria: #172437;
+    --cor-secundaria: #2563eb;
+    --cor-secundaria-hover: #1d4ed8;
+    --cor-fundo: #f1f5f9;
+    --cor-texto: #334155;
+    --cor-texto-suave: #64748b;
+    --cor-borda: #cbd5e1;
+    --cor-branco: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Página de autenticação */
+
+.pagina-login {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(
+        135deg,
+        #101d30 0%,
+        #172b46 55%,
+        #25466d 100%
+    );
+}
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.login-identidade {
+    margin-bottom: 28px;
+    color: var(--cor-branco);
+    text-align: center;
+}
+
+.login-identidade h1 {
+    margin-bottom: 8px;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.login-identidade p {
+    margin-bottom: 0;
+    color: #b8c7db;
+    font-size: 0.95rem;
+}
+
+.login-card {
+    padding: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    background-color: var(--cor-branco);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.login-card h2 {
+    margin-bottom: 8px;
+    color: var(--cor-primaria);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.login-descricao {
+    margin-bottom: 28px;
+    color: var(--cor-texto-suave);
+    font-size: 0.95rem;
+}
+
+.login-card .form-label {
+    color: var(--cor-texto);
+    font-weight: 600;
+}
+
+.login-card .form-control {
+    min-height: 46px;
+    border-color: var(--cor-borda);
+    border-radius: 8px;
+}
+
+.login-card .form-control:focus {
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.btn-primario {
+    min-height: 46px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--cor-secundaria);
+    color: var(--cor-branco);
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primario:hover,
+.btn-primario:focus-visible {
+    background-color: var(--cor-secundaria-hover);
+    color: var(--cor-branco);
+}
+
+.login-rodape {
+    margin-top: 24px;
+    color: #b8c7db;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .pagina-login {
+        padding: 16px;
+    }
+
+    .login-card {
+        padding: 26px 22px;
+    }
+
+    .login-identidade h1 {
+        font-size: 1.25rem;
+    }
+
+    .login-card h2 {
+        font-size: 1.4rem;
+    }
+}

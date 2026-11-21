@@ -1,4 +1,5 @@
 
+
 <?php
 
 require_once __DIR__ . '/../includes/autenticacao.php';
@@ -107,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             } else {
 
-                // Atualiza os dados básicos.
+                // Atualiza os dados, incluindo a senha somente se informada.
                 if ($senha !== '') {
 
                     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
@@ -171,111 +172,225 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Editar Usuário | Sistema de Gerenciamento</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+
 </head>
 
-<body>
+<body class="pagina-sistema">
 
-    <main>
+    <header class="sistema-cabecalho">
 
-        <h1>Editar Usuário</h1>
+        <div class="container">
 
-        <?php if (!empty($erros)): ?>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
 
-            <div role="alert">
+                <div class="sistema-marca">
 
-                <?php foreach ($erros as $erro): ?>
+                    <h1>Gerenciamento de Usuários</h1>
+                    <p>Painel administrativo</p>
 
-                    <p>
-                        <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
-                    </p>
+                </div>
 
-                <?php endforeach; ?>
+                <div class="d-flex align-items-center gap-3">
 
-            </div>
+                    <span class="sistema-usuario">
+                        <?= htmlspecialchars(
+                            $_SESSION['usuario_nome'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+                    </span>
 
-        <?php endif; ?>
+                    <a
+                        href="../logout.php"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Sair
+                    </a>
 
-        <form method="POST" action="">
-
-            <div>
-
-                <label for="nome">Nome:</label>
-
-                <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    value="<?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>"
-                    maxlength="100"
-                    required
-                >
+                </div>
 
             </div>
 
-            <div>
+        </div>
 
-                <label for="email">E-mail:</label>
+    </header>
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
-                    maxlength="150"
-                    required
-                >
+    <main class="container sistema-conteudo">
 
-            </div>
+        <section class="sistema-card sistema-formulario">
 
-            <div>
+            <div class="mb-4">
 
-                <label for="login">Login:</label>
+                <h2 class="sistema-titulo">
+                    Editar usuário
+                </h2>
 
-                <input
-                    type="text"
-                    id="login"
-                    name="login"
-                    value="<?= htmlspecialchars($login, ENT_QUOTES, 'UTF-8') ?>"
-                    maxlength="50"
-                    required
-                >
+                <p class="sistema-subtitulo">
+                    Atualize as informações do usuário selecionado.
+                </p>
 
             </div>
 
-            <div>
+            <?php if (!empty($erros)): ?>
 
-                <label for="senha">Nova senha:</label>
+                <div class="alert alert-danger" role="alert">
 
-                <input
-                    type="password"
-                    id="senha"
-                    name="senha"
-                    minlength="8"
-                    autocomplete="new-password"
-                >
+                    <?php foreach ($erros as $erro): ?>
 
-                <small>
-                    Deixe em branco para manter a senha atual.
-                    Se informar uma nova senha, utilize pelo menos
-                    8 caracteres, contendo letras e números.
-                </small>
+                        <p class="mb-1">
+                            <?= htmlspecialchars(
+                                $erro,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </p>
 
-            </div>
+                    <?php endforeach; ?>
 
-            <button type="submit">Salvar alterações</button>
+                </div>
 
-        </form>
+            <?php endif; ?>
 
-        <p>
-            <a href="select.php">Voltar à lista de usuários</a>
-        </p>
+            <form method="POST" action="">
+
+                <div class="mb-3">
+
+                    <label for="nome" class="form-label">
+                        Nome completo
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="nome"
+                        name="nome"
+                        value="<?= htmlspecialchars(
+                            $nome,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>"
+                        placeholder="Nome do usuário"
+                        maxlength="100"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="email" class="form-label">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        name="email"
+                        value="<?= htmlspecialchars(
+                            $email,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>"
+                        placeholder="usuario@exemplo.com"
+                        maxlength="150"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="row g-3 mb-3">
+
+                    <div class="col-md-6">
+
+                        <label for="login" class="form-label">
+                            Login
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="login"
+                            name="login"
+                            value="<?= htmlspecialchars(
+                                $login,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>"
+                            placeholder="Login de acesso"
+                            maxlength="50"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="senha" class="form-label">
+                            Nova senha
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="senha"
+                            name="senha"
+                            placeholder="Opcional"
+                            minlength="8"
+                            autocomplete="new-password"
+                            aria-describedby="ajuda-senha"
+                        >
+
+                    </div>
+
+                </div>
+
+                <p id="ajuda-senha" class="form-text mb-4">
+                    Deixe o campo de senha vazio para manter a senha atual.
+                    Caso deseje alterá-la, utilize pelo menos 8 caracteres,
+                    contendo letras e números.
+                </p>
+
+                <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                    <a
+                        href="select.php"
+                        class="btn btn-outline-secondary px-4"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primario px-4"
+                    >
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
 
     </main>
 
 </body>
 
 </html>
+

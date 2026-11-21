@@ -253,3 +253,50 @@ body {
     }
 
 }
+
+
+/* =========================================
+   Formulários administrativos
+========================================= */
+
+.sistema-formulario {
+    max-width: 760px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.sistema-formulario .form-label {
+    color: var(--cor-texto);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.sistema-formulario .form-control {
+    min-height: 46px;
+    border-color: var(--cor-borda);
+    border-radius: 8px;
+}
+
+.sistema-formulario .form-control:focus {
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.sistema-formulario .form-text {
+    color: var(--cor-texto-suave);
+    font-size: 0.85rem;
+}
+
+.sistema-formulario .btn {
+    min-height: 42px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+@media (max-width: 480px) {
+
+    .sistema-formulario .btn {
+        width: 100%;
+    }
+
+}

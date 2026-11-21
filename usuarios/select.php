@@ -1,5 +1,4 @@
 
-
 <?php
 
 require_once __DIR__ . '/../includes/autenticacao.php';
@@ -56,7 +55,11 @@ try {
                 <?= htmlspecialchars($_SESSION['usuario_nome'], ENT_QUOTES, 'UTF-8') ?>!
             </p>
 
-            <a href="../logout.php">Sair do sistema</a>
+            <nav>
+                <a href="insert.php">Cadastrar usuário</a>
+                |
+                <a href="../logout.php">Sair do sistema</a>
+            </nav>
 
         </header>
 
@@ -67,6 +70,12 @@ try {
             <?php if (isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso'): ?>
 
                 <p role="status">Usuário cadastrado com sucesso!</p>
+
+            <?php endif; ?>
+
+            <?php if (isset($_GET['edicao']) && $_GET['edicao'] === 'sucesso'): ?>
+
+                <p role="status">Usuário atualizado com sucesso!</p>
 
             <?php endif; ?>
 
@@ -90,6 +99,7 @@ try {
                             <th>Nome</th>
                             <th>E-mail</th>
                             <th>Login</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
 
@@ -113,6 +123,12 @@ try {
 
                                 <td>
                                     <?= htmlspecialchars($usuario['login'], ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <a href="update.php?id=<?= (int) $usuario['id'] ?>">
+                                        Editar
+                                    </a>
                                 </td>
 
                             </tr>

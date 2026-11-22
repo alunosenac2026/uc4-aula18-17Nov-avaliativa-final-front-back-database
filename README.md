@@ -1,92 +1,157 @@
-# uc4-aula18-17Nov-avaliativa-final-front-back-database
+# Sistema de Gerenciamento de Usuários
 
+Projeto individual desenvolvido como atividade avaliativa final da Unidade Curricular 4 (UC4) do Programa Jovem Programador — SENAC.
 
-Projeto Final (Individual): Sistema de Gerenciamento de Usuários com Autenticação
-Objetivo Geral: Desenvolver uma aplicação web completa (Front-end + Back-end + Banco de Dados) aplicando as quatro operações básicas de um CRUD (Create, Read, Update, Delete) aplicadas ao cadastro de usuários, adicionando controle de acesso por meio de uma tela de login funcional.
+A aplicação integra front-end, back-end e banco de dados, permitindo o gerenciamento de usuários por meio de operações CRUD e autenticação com sessões PHP.
 
-Especificações Detalhadas
+## Funcionalidades
 
+- Autenticação de usuários por login e senha.
+- Controle de acesso às páginas internas por sessão.
+- Encerramento da sessão (logout).
+- Cadastro de usuários.
+- Listagem de usuários cadastrados.
+- Atualização de dados cadastrais.
+- Exclusão de usuários, com proteção contra exclusão da própria conta.
+- Validação dos dados recebidos pelo servidor.
+- Proteção CSRF nas operações de alteração de dados.
+- Armazenamento de senhas utilizando hash.
+- Menu de navegação reutilizável.
+- Interface responsiva.
 
-1.
-Banco de Dados:
-•
-Criar um banco de dados e uma tabela Usuário contendo os campos necessários para cadastro e autenticação (id, nome, email, login e senha).
-•
-Inserir previamente via script SQL ao menos um usuário administrador padrão para permitir o primeiro acesso ao sistema.
+## Tecnologias utilizadas
 
+- PHP
+- MySQL
+- HTML5
+- CSS3
+- Bootstrap 5.3.3
+- PDO para comunicação com o banco de dados
 
-2.
-Tela de Login e Controle de Sessão:
-•
-Criar uma página inicial de login (index.php) que valide o usuário e a senha informados diretamente no banco de dados.
-•
-Utilizar sessões ($_SESSION) no PHP para proteger as páginas internas do CRUD, impedindo que usuários não autenticados acessem o sistema diretamente pela URL.
-•
-Incluir uma opção de Sair (Logout) para encerrar a sessão e retornar à tela de login.
+## Estrutura do projeto
 
+```text
+.
+├── assets/
+│   └── css/
+│       └── style.css
+├── config/
+│   └── conexao.example.php
+├── includes/
+│   ├── autenticacao.php
+│   └── navegacao.php
+├── sistema-gerenciamento-usuarios/
+│   └── database/
+│       └── sistema_gerenciamento_usuarios.sql
+├── usuarios/
+│   ├── delete.php
+│   ├── insert.php
+│   ├── select.php
+│   └── update.php
+├── .gitignore
+├── index.php
+├── logout.php
+└── README.md
+```
 
-3.
-Operações do CRUD (Área Interna):
-•
-Cadastrar (insert.php): Formulário HTML e lógica PHP para adicionar novos usuários no banco de dados.
-•
-Listar/Relatório (select.php): Tabela exibindo todos os usuários cadastrados no sistema.
-•
-Atualizar (update.php): Formulário de edição de usuários.
-•
-Excluir (delete.php): Formulário de deleção de usuários.
+O arquivo `config/conexao.php` deve ser criado localmente e não é incluído no repositório.
 
+## Requisitos para execução
 
-4.
-Navegação e Interface:
-•
-Manter um menu de navegação (<nav>) acessível em todas as telas internas para alternar entre as operações do CRUD e a opção de logout.
-•
-Estilizar formulários, tabelas e a tela de login com CSS de forma limpa e organizada.
+- Servidor web com suporte a PHP.
+- PHP com extensão PDO MySQL habilitada.
+- Servidor MySQL.
+- Navegador web.
+- XAMPP ou ambiente equivalente para execução local.
 
+O desenvolvimento e os testes foram realizados em ambiente Windows, utilizando XAMPP, PHP 8.2.12 e MySQL 8.0.46.
 
-5.
-Desafio Extra — Sistema de Log com Triggers:
-•
-Criar uma tabela Log_Auditoria no banco de dados.
-•
-Implementar Triggers no MySQL (AFTER INSERT, AFTER UPDATE, AFTER DELETE) na tabela Usuario para registrar automaticamente toda criação, alteração e exclusão
-de registros, armazenando o tipo de ação, os dados afetados e a data/hora do evento.
-•
-Criar uma página de Relatório de Logs no sistema para consultar e exibir o histórico registrado pela tabela de log.
-Entrega: Compactar a pasta completa do projeto ou encaminhar o link do repositório público no github e enviar até a data combinada. Encaminhar junto o script de criação de banco para poder replicar o processo.
+## Instalação e configuração
 
+### 1. Obter o projeto
 
+Clone o repositório dentro de um diretório servido pelo Apache, como a pasta `htdocs` do XAMPP.
 
- SCRIPT DE CRIAÇÃO DO BANCO DE DADOS E TABELA USUARIO
--- =====================================================
--- PROJETO FINAL UC4 - SISTEMA DE GERENCIAMENTO DE USUARIOS
--- =====================================================
+### 2. Criar o banco de dados
 
-CREATE DATABASE IF NOT EXISTS sistema_gerenciamento_usuarios
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
+Execute o script:
 
-USE sistema_gerenciamento_usuarios;
+`sistema-gerenciamento-usuarios/database/sistema_gerenciamento_usuarios.sql`
 
-CREATE TABLE IF NOT EXISTS Usuario (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    login VARCHAR(50) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL
-);
+O script cria o banco `sistema_gerenciamento_usuarios`, a tabela `Usuario` e um registro inicial de administrador.
 
-DESCRIBE Usuario;
+### 3. Configurar a conexão
 
--- =====================================================
---  INSERCAO DO ADMINISTRADOR INICIAL
--- =====================================================
+Na pasta `config`, faça uma cópia de:
 
-INSERT INTO Usuario (nome, email, login, senha)
-VALUES (
-    'Administrador',
-    'admin@sistema.local',
-    'admin',
-    '$2y$10$j2c/nbxzGEVw87rwdj2Ba.bvMOnRZHKNyVwCuf6Y8BpWrF.2w29YO'
-);
+`conexao.example.php`
+
+Renomeie a cópia para:
+
+`conexao.php`
+
+Configure os seguintes parâmetros conforme o ambiente:
+
+```php
+$host = 'localhost';
+$dbname = 'sistema_gerenciamento_usuarios';
+$username = 'seu_usuario_mysql';
+$password = 'sua_senha_mysql';
+```
+
+O arquivo de conexão local é ignorado pelo Git para evitar a publicação das credenciais do banco.
+
+### 4. Iniciar os serviços
+
+Inicie o Apache e o servidor MySQL correspondente à configuração utilizada.
+
+### 5. Acessar a aplicação
+
+Abra o arquivo `index.php` pelo endereço HTTP correspondente à pasta onde o projeto foi instalado.
+
+Exemplo:
+
+`http://localhost/nome-da-pasta-do-projeto/index.php`
+
+Utilize as credenciais do administrador inicial definidas para o ambiente de instalação.
+
+### Primeiro acesso e senha do administrador
+
+O script SQL cria um administrador inicial com login `admin` e e-mail `admin@sistema.local`. A senha é armazenada como hash bcrypt.
+
+Para definir uma senha conhecida no ambiente de instalação, gere um novo hash com a função PHP `password_hash()` e atualize o campo `senha` do administrador no banco de dados.
+
+Por segurança, não utilize credenciais de teste em ambientes compartilhados.
+
+## Organização dos arquivos
+
+| Arquivo | Responsabilidade |
+| --- | --- |
+| `index.php` | Autenticação e início da sessão |
+| `logout.php` | Encerramento da sessão |
+| `config/conexao.example.php` | Modelo de configuração do PDO |
+| `includes/autenticacao.php` | Verificação de autenticação |
+| `includes/navegacao.php` | Menu de navegação reutilizável |
+| `usuarios/insert.php` | Cadastro de usuários |
+| `usuarios/select.php` | Listagem de usuários |
+| `usuarios/update.php` | Atualização de usuários |
+| `usuarios/delete.php` | Exclusão de usuários |
+| `assets/css/style.css` | Estilização da aplicação |
+
+## Segurança
+
+A aplicação utiliza consultas preparadas com PDO, hashes de senha, validação de entradas, proteção CSRF e controle de sessão.
+
+O projeto possui finalidade acadêmica. Antes de qualquer utilização em produção, são necessárias avaliações adicionais de segurança, permissões, configuração do servidor e gerenciamento de credenciais.
+
+A senha do administrador inicial deve ser alterada antes de disponibilizar o sistema em qualquer ambiente compartilhado.
+
+## Escopo da atividade
+
+Esta entrega contempla os requisitos obrigatórios da atividade avaliativa: banco de dados, autenticação, sessões, operações CRUD, navegação e interface.
+
+O desafio extra de auditoria com triggers e relatório de logs não faz parte desta implementação.
+
+## Autor
+
+Projeto individual desenvolvido para a avaliação final da UC4 — Programa Jovem Programador, SENAC.

@@ -293,6 +293,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </div>
 
+            <?php require __DIR__ . "/../includes/navegacao.php"; ?>
+
         </div>
 
     </header>

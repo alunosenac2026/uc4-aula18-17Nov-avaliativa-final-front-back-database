@@ -300,3 +300,53 @@ body {
     }
 
 }
+
+
+/* =========================================
+   Navegação administrativa
+========================================= */
+
+.sistema-navegacao {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sistema-nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.sistema-nav-link:hover,
+.sistema-nav-link:focus-visible {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.sistema-nav-link.ativo {
+    border-color: var(--cor-secundaria);
+    background-color: var(--cor-secundaria);
+    color: #ffffff;
+}
+
+@media (max-width: 480px) {
+
+    .sistema-nav-link {
+        flex: 1 1 auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+}

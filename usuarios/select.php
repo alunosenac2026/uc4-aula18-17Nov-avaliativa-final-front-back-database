@@ -116,6 +116,8 @@ if (
 
             </div>
 
+            <?php require __DIR__ . "/../includes/navegacao.php"; ?>
+
         </div>
 
     </header>

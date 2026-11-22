@@ -31,4 +31,12 @@ $paginaAtual = basename($_SERVER['SCRIPT_NAME']);
         Cadastrar usuário
     </a>
 
+    <a
+        href="logs.php"
+        class="sistema-nav-link <?= $paginaAtual === 'logs.php' ? 'ativo' : '' ?>"
+        <?= $paginaAtual === 'logs.php' ? 'aria-current="page"' : '' ?>
+    >
+        Relatório de logs
+    </a>
+
 </nav>

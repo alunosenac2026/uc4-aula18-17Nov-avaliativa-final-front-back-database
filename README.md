@@ -2,7 +2,7 @@
 
 Projeto individual desenvolvido como atividade avaliativa final da Unidade Curricular 4 (UC4) do Programa Jovem Programador — SENAC.
 
-A aplicação integra front-end, back-end e banco de dados, permitindo o gerenciamento de usuários por meio de operações CRUD e autenticação com sessões PHP.
+A aplicação integra front-end, back-end e banco de dados, permitindo o gerenciamento de usuários por meio de operações CRUD, autenticação com sessões PHP e auditoria automática das operações realizadas.
 
 ## Funcionalidades
 
@@ -18,6 +18,9 @@ A aplicação integra front-end, back-end e banco de dados, permitindo o gerenci
 - Armazenamento de senhas utilizando hash.
 - Menu de navegação reutilizável.
 - Interface responsiva.
+- Registro automático de operações INSERT, UPDATE e DELETE por triggers MySQL.
+- Histórico de auditoria com data, hora e dados anteriores e posteriores às operações.
+- Relatório de logs protegido por autenticação.
 
 ## Tecnologias utilizadas
 
@@ -46,6 +49,7 @@ A aplicação integra front-end, back-end e banco de dados, permitindo o gerenci
 ├── usuarios/
 │   ├── delete.php
 │   ├── insert.php
+│   ├── logs.php
 │   ├── select.php
 │   └── update.php
 ├── .gitignore
@@ -78,7 +82,9 @@ Execute o script:
 
 `sistema-gerenciamento-usuarios/database/sistema_gerenciamento_usuarios.sql`
 
-O script cria o banco `sistema_gerenciamento_usuarios`, a tabela `Usuario` e um registro inicial de administrador.
+O script cria o banco `sistema_gerenciamento_usuarios`, a tabela `Usuario`, um registro inicial de administrador, a tabela `Log_Auditoria` e três triggers de auditoria (`AFTER INSERT`, `AFTER UPDATE` e `AFTER DELETE`).
+
+As triggers registram automaticamente as operações realizadas na tabela `Usuario`. Os registros anteriores à instalação das triggers não são recuperados retroativamente.
 
 ### 3. Configurar a conexão
 
@@ -133,10 +139,26 @@ Por segurança, não utilize credenciais de teste em ambientes compartilhados.
 | `includes/autenticacao.php` | Verificação de autenticação |
 | `includes/navegacao.php` | Menu de navegação reutilizável |
 | `usuarios/insert.php` | Cadastro de usuários |
+| `usuarios/logs.php` | Relatório de auditoria das operações realizadas |
 | `usuarios/select.php` | Listagem de usuários |
 | `usuarios/update.php` | Atualização de usuários |
 | `usuarios/delete.php` | Exclusão de usuários |
 | `assets/css/style.css` | Estilização da aplicação |
+| `sistema-gerenciamento-usuarios/database/sistema_gerenciamento_usuarios.sql` | Criação do banco, tabelas e triggers de auditoria |
+
+## Auditoria de operações
+
+O desafio extra utiliza a tabela `Log_Auditoria` para registrar automaticamente as operações realizadas na tabela `Usuario`.
+
+- `INSERT`: registra os dados do usuário cadastrado.
+- `UPDATE`: registra os dados anteriores e posteriores à alteração.
+- `DELETE`: preserva os dados do usuário excluído no histórico.
+
+Cada evento possui identificador próprio, identificador do usuário afetado, tipo de operação, dados anteriores, dados novos e data/hora.
+
+Os dados são armazenados em formato JSON, sem incluir o campo de senha. O identificador do usuário afetado não representa necessariamente o usuário autenticado que realizou a operação.
+
+O relatório está disponível em `usuarios/logs.php` para usuários autenticados. Os eventos são apresentados do mais recente para o mais antigo.
 
 ## Segurança
 
@@ -150,7 +172,7 @@ A senha do administrador inicial deve ser alterada antes de disponibilizar o sis
 
 Esta entrega contempla os requisitos obrigatórios da atividade avaliativa: banco de dados, autenticação, sessões, operações CRUD, navegação e interface.
 
-O desafio extra de auditoria com triggers e relatório de logs não faz parte desta implementação.
+O desafio extra também foi implementado, incluindo a tabela `Log_Auditoria`, três triggers MySQL e uma página de relatório para consulta do histórico de operações.
 
 ## Autor
 

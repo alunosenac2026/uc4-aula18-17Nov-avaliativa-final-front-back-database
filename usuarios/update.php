@@ -1,5 +1,4 @@
 
-
 <?php
 
 require_once __DIR__ . '/../includes/autenticacao.php';
@@ -9,20 +8,22 @@ verificarAutenticacao();
 
 $erros = [];
 $usuario = null;
+
+// Valida o identificador recebido pela URL.
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-// Valida o ID recebido.
 if (!$id || $id <= 0) {
     header('Location: select.php');
     exit;
 }
 
-// Busca o usuário.
+// Busca o usuário que será editado.
 try {
 
     $sql = "SELECT id, nome, email, login
             FROM Usuario
-            WHERE id = :id";
+            WHERE id = :id
+            LIMIT 1";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $id]);
@@ -40,59 +41,113 @@ try {
 
     http_response_code(500);
     exit('Não foi possível carregar os dados do usuário.');
-
 }
 
-// Inicializa os campos com os dados atuais.
+// Inicializa os campos com os dados existentes.
 $nome = $usuario['nome'];
 $email = $usuario['email'];
 $login = $usuario['login'];
 
+// Gera um token CSRF para a edição.
+if (
+    !isset($_SESSION['csrf_edicao']) ||
+    !is_string($_SESSION['csrf_edicao'])
+) {
+    $_SESSION['csrf_edicao'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Verifica o token antes de processar alterações.
+    $token = $_POST['csrf_token'] ?? null;
+
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION['csrf_edicao'], $token)
+    ) {
+        http_response_code(403);
+        exit('Solicitação inválida.');
+    }
+
+    // Rejeita campos enviados com tipos inesperados.
+    $campos = ['nome', 'email', 'login', 'senha'];
+
+    foreach ($campos as $campo) {
+
+        if (
+            isset($_POST[$campo]) &&
+            !is_string($_POST[$campo])
+        ) {
+            http_response_code(400);
+            exit('Dados inválidos.');
+        }
+    }
 
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $login = trim($_POST['login'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
-    // Validação dos campos.
+    // Validação do nome.
     if ($nome === '') {
+
         $erros[] = 'Informe o nome do usuário.';
+
+    } elseif (mb_strlen($nome, 'UTF-8') > 100) {
+
+        $erros[] = 'O nome deve possuir no máximo 100 caracteres.';
     }
 
+    // Validação do e-mail.
     if ($email === '') {
+
         $erros[] = 'Informe o e-mail do usuário.';
+
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
         $erros[] = 'Informe um endereço de e-mail válido.';
+
+    } elseif (mb_strlen($email, 'UTF-8') > 150) {
+
+        $erros[] = 'O e-mail deve possuir no máximo 150 caracteres.';
     }
 
+    // Validação do login.
     if ($login === '') {
+
         $erros[] = 'Informe o login do usuário.';
+
+    } elseif (mb_strlen($login, 'UTF-8') > 50) {
+
+        $erros[] = 'O login deve possuir no máximo 50 caracteres.';
     }
 
-    // Validação da nova senha, caso informada.
+    // A nova senha permanece opcional.
     if ($senha !== '') {
 
         if (strlen($senha) < 8) {
+
             $erros[] = 'A senha deve possuir pelo menos 8 caracteres.';
+
         } elseif (
             !preg_match('/[a-zA-Z]/', $senha) ||
             !preg_match('/[0-9]/', $senha)
         ) {
+
             $erros[] = 'A senha deve conter pelo menos uma letra e um número.';
         }
-
     }
 
     if (empty($erros)) {
 
         try {
 
-            // Verifica duplicidade, ignorando o próprio usuário.
+            // Verifica duplicidade, ignorando o próprio registro.
             $sql = "SELECT id
                     FROM Usuario
                     WHERE (email = :email OR login = :login)
-                    AND id != :id";
+                    AND id != :id
+                    LIMIT 1";
 
             $stmt = $pdo->prepare($sql);
 
@@ -108,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             } else {
 
-                // Atualiza os dados, incluindo a senha somente se informada.
+                // Atualiza a senha somente quando uma nova for informada.
                 if ($senha !== '') {
 
                     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
@@ -146,24 +201,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'login' => $login,
                         'id' => $id
                     ]);
-
                 }
+
+                // Sincroniza a sessão se o usuário editar a própria conta.
+                if ($id === (int) $_SESSION['usuario_id']) {
+
+                    $_SESSION['usuario_nome'] = $nome;
+                    $_SESSION['usuario_login'] = $login;
+                }
+
+                // Renova o token após a edição bem-sucedida.
+                $_SESSION['csrf_edicao'] = bin2hex(random_bytes(32));
 
                 header('Location: select.php?edicao=sucesso');
                 exit;
-
             }
 
         } catch (PDOException $e) {
 
-            error_log('Erro ao atualizar usuário: ' . $e->getMessage());
+            // Trata conflitos de unicidade.
+            if ($e->getCode() === '23000') {
 
-            $erros[] = 'Não foi possível atualizar o usuário. Tente novamente.';
+                $erros[] = 'O e-mail ou login informado já pertence a outro usuário.';
 
+            } else {
+
+                error_log(
+                    'Erro ao atualizar usuário: ' . $e->getMessage()
+                );
+
+                $erros[] = 'Não foi possível atualizar o usuário. Tente novamente.';
+            }
         }
-
     }
-
 }
 
 ?>
@@ -264,6 +334,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" action="">
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars(
+                        $_SESSION['csrf_edicao'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>"
+                >
 
                 <div class="mb-3">
 
@@ -393,4 +473,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-

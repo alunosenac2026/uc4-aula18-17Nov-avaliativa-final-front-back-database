@@ -11,26 +11,66 @@ $nome = '';
 $email = '';
 $login = '';
 
+// Gera o token CSRF para o formulário de cadastro.
+if (
+    !isset($_SESSION['csrf_cadastro']) ||
+    !is_string($_SESSION['csrf_cadastro'])
+) {
+    $_SESSION['csrf_cadastro'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Valida o token CSRF antes de processar o cadastro.
+    $token = $_POST['csrf_token'] ?? null;
+
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION['csrf_cadastro'], $token)
+    ) {
+        http_response_code(403);
+        exit('Solicitação inválida.');
+    }
+
+    // Rejeita entradas que não sejam strings.
+    $campos = ['nome', 'email', 'login', 'senha'];
+
+    foreach ($campos as $campo) {
+        if (
+            isset($_POST[$campo]) &&
+            !is_string($_POST[$campo])
+        ) {
+            http_response_code(400);
+            exit('Dados inválidos.');
+        }
+    }
 
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $login = trim($_POST['login'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
-    // Validação dos campos obrigatórios.
+    // Validação do nome.
     if ($nome === '') {
         $erros[] = 'Informe o nome do usuário.';
+    } elseif (mb_strlen($nome, 'UTF-8') > 100) {
+        $erros[] = 'O nome deve possuir no máximo 100 caracteres.';
     }
 
+    // Validação do e-mail.
     if ($email === '') {
         $erros[] = 'Informe o e-mail do usuário.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erros[] = 'Informe um endereço de e-mail válido.';
+    } elseif (mb_strlen($email, 'UTF-8') > 150) {
+        $erros[] = 'O e-mail deve possuir no máximo 150 caracteres.';
     }
 
+    // Validação do login.
     if ($login === '') {
         $erros[] = 'Informe o login do usuário.';
+    } elseif (mb_strlen($login, 'UTF-8') > 50) {
+        $erros[] = 'O login deve possuir no máximo 50 caracteres.';
     }
 
     // Validação da senha.
@@ -50,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "SELECT id
                     FROM Usuario
-                    WHERE email = :email OR login = :login";
+                    WHERE email = :email OR login = :login
+                    LIMIT 1";
 
             $stmt = $pdo->prepare($sql);
 
@@ -81,16 +122,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'senha' => $senhaHash
                 ]);
 
+                // Renova o token após um cadastro bem-sucedido.
+                $_SESSION['csrf_cadastro'] = bin2hex(random_bytes(32));
+
                 header('Location: select.php?cadastro=sucesso');
                 exit;
-
             }
 
         } catch (PDOException $e) {
 
-            error_log('Erro ao cadastrar usuário: ' . $e->getMessage());
+            if ($e->getCode() === '23000') {
 
-            $erros[] = 'Não foi possível cadastrar o usuário. Tente novamente.';
+                $erros[] = 'O e-mail ou login informado já está cadastrado.';
+
+            } else {
+
+                error_log(
+                    'Erro ao cadastrar usuário: ' . $e->getMessage()
+                );
+
+                $erros[] = 'Não foi possível cadastrar o usuário. Tente novamente.';
+            }
 
         }
 
@@ -196,6 +248,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" action="">
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars(
+                        $_SESSION['csrf_cadastro'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>"
+                >
 
                 <div class="mb-3">
 

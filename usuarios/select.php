@@ -12,7 +12,10 @@ $usuarios = [];
 $erro = '';
 
 // Cria um token para proteger os formulários de exclusão.
-if (empty($_SESSION['csrf_exclusao'])) {
+if (
+    !isset($_SESSION['csrf_exclusao']) ||
+    !is_string($_SESSION['csrf_exclusao'])
+) {
     $_SESSION['csrf_exclusao'] = bin2hex(random_bytes(32));
 }
 
